@@ -1,0 +1,23 @@
+# Normalize line endings to LF on checkin for text files.
+* text=auto eol=lf
+
+# Explicit text formats
+*.md        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.json      text eol=lf
+*.sh        text eol=lf
+*.txt       text eol=lf
+
+# Windows-only scripts keep CRLF if any are ever added
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+
+# Treat common binary assets as binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.webp      binary
+*.pdf       binary
+*.zip       binary
