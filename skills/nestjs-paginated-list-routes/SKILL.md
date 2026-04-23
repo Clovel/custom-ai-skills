@@ -195,4 +195,3 @@ Use these IDs in PR/commit messages so follow-up audits are greppable.
 
 **See also:**
 - `references/canonical-helpers.md` — drop-in source for the four helpers.
-- `references/project-context.md` — this repo's concrete paths, reference endpoints, and verification commands (ignore if you're using this skill outside the originating repo).
