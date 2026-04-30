@@ -19,6 +19,8 @@ the Agent Skills spec.
 ├── CLAUDE.md
 ├── LICENSE
 ├── README.md
+├── hooks/
+│   └── <hook-name>.sh          # standalone Claude Code hooks
 └── skills/
     └── <skill-name>/
         ├── SKILL.md
@@ -28,6 +30,12 @@ the Agent Skills spec.
 Every skill lives in its own directory under `skills/`. The entry file
 **must** be named `SKILL.md` (uppercase) — the `skills` CLI discovers
 skills by scanning for that exact filename.
+
+Standalone Claude Code hooks live under `hooks/` as executable shell
+scripts. They are not auto-installed; the `README` documents wiring
+them into `~/.claude/settings.json` manually. Hooks must be
+self-contained and generic — no hard-coded paths, keys, or usernames —
+so they're safe to publish.
 
 ## Adding a new skill
 

@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Git branching, commits, and merge request workflow. Use when creating branches, committing, or preparing MRs/PRs.
+description: Git branching, commits, GPG signing, and merge request workflow. Use when creating branches, committing (including signed commits), troubleshooting commit hangs / GPG / pinentry issues, or preparing MRs/PRs.
 ---
 # Git Workflow
 
@@ -64,6 +64,25 @@ Avoid `feat:` / `fix:` / `(fix)` Conventional Commits prefixes — not the conve
 - **Title-only.** If you feel the need for a multi-paragraph description, the commit probably needs to be split. Use `git add -p` / `git add -i`.
 - **Clean the history before merging.** Use `git commit --amend` or `git rebase -i` to squash WIPs, fix typos, reorder.
 - WIP-style commits (`[WIP] ...`) are fine during work but should be squashed or renamed before the MR is ready.
+
+### GPG signing
+
+When `commit.gpgsign = true`, signed git operations (commit, tag, merge, cherry-pick, revert, rebase) must reach gpg-agent's pinentry to unlock the signing key. **Pinentry cannot prompt from inside Claude Code's TTY** — curses, GUI, anything interactive — so the operation hangs indefinitely.
+
+Two practical workarounds:
+
+1. **Long passphrase cache + once-daily pre-unlock** (recommended). In `~/.gnupg/gpg-agent.conf`:
+
+   ```
+   default-cache-ttl 86400
+   max-cache-ttl 86400
+   ```
+
+   Then once a day, in a normal terminal: `echo test | gpg --clearsign > /dev/null`. The cache stays warm for 24h and signed commits inside Claude Code "just work."
+
+2. **PreToolUse hook** — see [`hooks/git-gpg-precheck.sh`](../../hooks/git-gpg-precheck.sh) in this repo. Probes the cache before any signed git operation and returns `permissionDecision: "deny"` with a clear "cold cache" message when the cache is empty, so the agent stops and asks the user to pre-unlock instead of hanging.
+
+Last resort: pass `--no-gpg-sign` for an unsigned commit. Don't pre-emptively bypass signing — only use this when the user has explicitly authorized it for the specific operation, otherwise commits stop being verifiable.
 
 ## Pulling & rebasing
 
