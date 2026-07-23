@@ -80,6 +80,10 @@ Two practical workarounds:
 
    Then once a day, in a normal terminal: `echo test | gpg --clearsign > /dev/null`. The cache stays warm for 24h and signed commits inside Claude Code "just work."
 
+   **Warm a specific (non-default) key.** `gpg --clearsign` signs with the default key (`default-key`, or the first secret key), so it warms the *wrong* key's cache if you sign commits with a non-default key. Pin the key with `-u`: `echo test | gpg -u <KEYID> --clearsign > /dev/null`.
+
+   **Re-warm before expiry (reset the 24h window).** Re-running the warm command while the cache is still valid does *not* extend the lifetime — `max-cache-ttl` is measured from the *first* unlock and is never bumped by use (only `default-cache-ttl` resets, and here they're equal). To force a fresh 24h window you must flush the cached passphrase first, then re-sign to trigger pinentry: flush the signing (sub)key's **keygrip** with `gpg-connect-agent "clear_passphrase --mode=normal <KEYGRIP>" /bye`, then `echo test | gpg -u <KEYID> --clearsign > /dev/null`. Find the keygrip with `gpg --list-secret-keys --with-keygrip` (use the *signing* subkey's keygrip, not the primary's). Flushing every signing-capable keygrip of the key and re-signing once is the robust way to avoid the primary-vs-subkey guess. A ready-made `gpg-rewarm <keyid>` function that does all of this is in [`references/gpg-rewarm.sh`](references/gpg-rewarm.sh) — source it from your shell rc.
+
 2. **PreToolUse hook** — see [`hooks/git-gpg-precheck.sh`](../../hooks/git-gpg-precheck.sh) in this repo. Probes the cache before any signed git operation and returns `permissionDecision: "deny"` with a clear "cold cache" message when the cache is empty, so the agent stops and asks the user to pre-unlock instead of hanging.
 
 Last resort: pass `--no-gpg-sign` for an unsigned commit. Don't pre-emptively bypass signing — only use this when the user has explicitly authorized it for the specific operation, otherwise commits stop being verifiable.
