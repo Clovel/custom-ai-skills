@@ -11,12 +11,19 @@
 #
 # Run in a normal terminal — pinentry cannot prompt inside a non-interactive TTY.
 #
-# Usage: gpg-rewarm <keyid|fingerprint|email>
+# Usage: gpg-rewarm [keyid|fingerprint|email]
+#   With no argument, falls back to $GPG_REWARM_KEY, then to git's configured
+#   signing key (`git config --get user.signingkey`) — which is the key that
+#   actually needs warming for signed commits, and follows key rotations.
 # Install: source this file from ~/.bashrc or ~/.zshrc, or run it directly.
 
 gpg-rewarm() {
-  local keyid="$1"
-  [ -z "$keyid" ] && { echo "usage: gpg-rewarm <keyid|fpr|email>" >&2; return 1; }
+  local keyid="${1:-${GPG_REWARM_KEY:-$(git config --get user.signingkey 2>/dev/null)}}"
+  [ -z "$keyid" ] && {
+    echo "usage: gpg-rewarm [keyid|fpr|email]" >&2
+    echo "  no argument given, \$GPG_REWARM_KEY unset, and git has no user.signingkey" >&2
+    return 1
+  }
 
   # Collect every signing-capable keygrip for this key (primary + signing subkeys).
   # Field 12 of sec/ssb holds capabilities (lowercase s = this key can sign);
