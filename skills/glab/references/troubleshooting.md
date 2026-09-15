@@ -54,8 +54,8 @@ Update to the latest version:
 # macOS
 brew upgrade glab
 
-# Linux (depends on package manager)
-sudo apt update && sudo apt upgrade glab
+# Linux: upgrade with whichever package manager installed it
+#   (apt, dnf, pacman, ...) — see your distro's docs
 ```
 
 ## Authentication Issues
@@ -506,16 +506,16 @@ x509: certificate signed by unknown authority
 
 2. Ensure no spaces in token:
    ```bash
-   export GITLAB_TOKEN=glpat-xxxxxxxxxxxxxxxxxxxx
+   export GITLAB_TOKEN=<your-token-here>
    ```
 
 3. Token should not be quoted in export:
    ```bash
    # Correct
-   export GITLAB_TOKEN=glpat-xxx
+   export GITLAB_TOKEN=<your-token-here>
 
    # Incorrect
-   export GITLAB_TOKEN="glpat-xxx"
+   export GITLAB_TOKEN="<your-token-here>"
    ```
 
 4. Verify token is valid in GitLab web UI

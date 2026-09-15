@@ -504,10 +504,10 @@ glab alias delete co
 glab ssh-key list
 
 # Add SSH key
-glab ssh-key add ~/.ssh/id_rsa.pub
+glab ssh-key add <path-to-public-key>
 
 # Add SSH key with title
-glab ssh-key add ~/.ssh/id_rsa.pub --title "Work laptop"
+glab ssh-key add <path-to-public-key> --title "Work laptop"
 
 # Delete SSH key
 glab ssh-key delete <key-id>
@@ -599,7 +599,7 @@ glab completion --shell fish
 glab completion --shell powershell
 
 # Install completion (bash example)
-glab completion --shell bash > /etc/bash_completion.d/glab
+glab completion --shell bash > ~/.local/share/bash-completion/completions/glab
 ```
 
 ## Version and Updates
