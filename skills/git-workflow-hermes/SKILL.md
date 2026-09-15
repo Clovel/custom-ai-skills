@@ -5,10 +5,11 @@ description: Hermes variant of git-workflow — branching, commits, and MR/PRs w
 
 # git-workflow-hermes
 
-The generic [`git-workflow`](../git-workflow) skill is written for harnesses that
-can drive an interactive terminal (Claude Code with a pre-unlocked gpg-agent,
-a human shell). A Hermes session cannot: its terminal is non-interactive, so any
-git command that blocks on a prompt hangs the whole turn.
+The generic `git-workflow` skill (in this repo, deliberately **not** installed
+alongside this one) is written for harnesses that can drive an interactive
+terminal (Claude Code with a pre-unlocked gpg-agent, a human shell).
+A Hermes session cannot: its terminal is non-interactive, so any git command
+that blocks on a prompt hangs the whole turn.
 
 This skill is that same workflow with those two failure classes removed.
 Everything not mentioned here is unchanged — read the generic skill for the
@@ -126,8 +127,10 @@ rebase onto the target branch just before requesting review.
 
 ## Related
 
-- [`git-workflow`](../git-workflow) — the harness-agnostic version, including the
-  GPG signing strategy and the `gpg-rewarm` helper for harnesses that can prompt.
-- [`../../hooks/git-gpg-precheck.sh`](../../hooks/git-gpg-precheck.sh) — Claude Code
-  `PreToolUse` hook that denies signed git operations when the passphrase cache is
-  cold. Not applicable to Hermes, where signing is off outright.
+- `git-workflow` — the harness-agnostic version, including the GPG signing
+  strategy and the `gpg-rewarm` helper for harnesses that can prompt. Install it
+  where it is needed with
+  `npx skills add Clovel/custom-ai-skills --skill git-workflow`.
+- `hooks/git-gpg-precheck.sh` — Claude Code `PreToolUse` hook that denies signed
+  git operations when the passphrase cache is cold. Not applicable to Hermes,
+  where signing is off outright.
