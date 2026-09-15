@@ -32,6 +32,20 @@ rebase-over-merge preferences.
 npx skills add Clovel/custom-ai-skills --skill git-workflow
 ```
 
+### [`git-workflow-hermes`](./skills/git-workflow-hermes)
+
+Hermes variant of `git-workflow`. Same branching, commit and MR/PR
+conventions, with two harness-specific changes: **commit signing is never
+performed** (a signed git operation hangs on a pinentry prompt a Hermes
+terminal cannot display), and every editor/picker-driven git command
+(`git add -p`, bare `git rebase -i`, `git commit` without `-m`) is replaced
+by its non-interactive equivalent. Supersedes `git-workflow` where they
+conflict; use the generic skill on harnesses that can prompt.
+
+```bash
+npx skills add Clovel/custom-ai-skills --skill git-workflow-hermes
+```
+
 ### [`glab`](./skills/glab)
 
 Expert guidance for the GitLab CLI (`glab`) — issues, merge requests,
