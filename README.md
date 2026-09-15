@@ -44,6 +44,20 @@ detailed command references and a troubleshooting guide under
 npx skills add Clovel/custom-ai-skills --skill glab
 ```
 
+### [`hermes-claude-code-tmux`](./skills/hermes-claude-code-tmux)
+
+Required procedure for a Hermes agent invoking the Claude Code CLI.
+Activates before any `claude` call, coding-task delegation, or subagent
+dispatch. Every invocation runs inside a named detached tmux session
+rather than a blocking terminal call, with dispatch/poll/collect
+patterns, explicit tool pre-granting, and `--resume` session handling.
+Supersedes the bundled `autonomous-ai-agents/claude-code` skill where
+they conflict.
+
+```bash
+npx skills add Clovel/custom-ai-skills --skill hermes-claude-code-tmux
+```
+
 ### [`k8s-ops`](./skills/k8s-ops)
 
 Kubernetes troubleshooting, deployment, and day-to-day operations.
