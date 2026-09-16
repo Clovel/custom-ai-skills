@@ -109,6 +109,16 @@ patterns, explicit tool pre-granting, and `--resume` session handling.
 Supersedes the bundled `autonomous-ai-agents/claude-code` skill where
 they conflict.
 
+### [`hermes-code-delegation`](./skills/hermes-code-delegation)
+
+Routes all codebase work to the Claude Code CLI rather than the agent's
+own file tools, and picks the model tier the task warrants. Activates on
+codebase-shaped requests — reviewing a branch or MR, debugging a failing
+test, explaining how something works, adding or refactoring code — and
+deliberately triggers *before* any file inside a repository is opened,
+since that is when the decision is made. Pairs with
+`hermes-claude-code-tmux`, which owns the dispatch mechanics.
+
 ### [`k8s-ops`](./skills/k8s-ops)
 
 Kubernetes troubleshooting, deployment, and day-to-day operations.
