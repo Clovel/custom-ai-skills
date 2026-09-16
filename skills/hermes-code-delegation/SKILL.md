@@ -46,15 +46,13 @@ a delegated task becomes an undelegated one.
 
 Pass `--model`. The task's difficulty decides, not its length.
 
-The top two tiers differ by the **shape** of the task, not by which is stronger — one
-goes deep in a bounded area, the other goes wide across a whole tree.
+Three tiers are chosen freely. A fourth is not — see below.
 
 | Tier | Use for | `--model` |
 | --- | --- | --- |
 | Cheap | Mechanical and bounded: "where is X defined", renames, formatting, generated boilerplate, a single obvious fix | `haiku` |
 | Default | Most real work: implementing a feature, fixing a bug, writing tests, reviewing a diff, explaining a module | `sonnet` |
-| Deep | Hard reasoning in a known place: a subtle or security-relevant bug, a tricky algorithm, a design decision with expensive consequences | `opus` |
-| Broad | Work that spans the codebase: a feature touching many modules, a review of a whole tree rather than a diff, a large refactor, a long autonomous run | `fable` |
+| Hard | Everything demanding: subtle or security-relevant bugs, tricky algorithms, expensive design decisions, large refactors, whole-codebase review, work spanning many modules, long autonomous runs | `opus` |
 
 Aliases select the current model in each tier; full identifiers also work when a
 specific one is required.
@@ -63,15 +61,27 @@ specific one is required.
 it returns confident, wrong code that costs far more to find and undo than the tokens it
 saved. Reserve `haiku` for tasks whose correctness you could verify at a glance.
 
-**Choose the top tier by shape.** "This bug is subtle and I know roughly where it is"
-is `opus`. "This change touches things I have not found yet" is `fable`, which is built
-for whole-codebase work and long-horizon runs, and whose cache reads are cheap enough
-that a long session is not punished for re-reading context.
+`opus` covers the whole top end: depth and breadth alike. There is no task in this table
+that requires reaching past it.
 
 Escalate rather than retry: if a run comes back confused, contradictory, or having
-misread the structure of the code, re-run at a higher tier with the same prompt rather
-than repeating it. If it misread the *structure* specifically, that is a breadth
-failure — go to `fable`, not `opus`.
+misread the structure of the code, re-run one tier up with the same prompt rather than
+repeating it at the same tier.
+
+### `fable` is opt-in, never chosen on your own
+
+**Do not select `fable` autonomously.** It is used only when the user has explicitly
+asked for it, or when you have suggested it and they agreed. This is a standing rule,
+not a default that a sufficiently large task overrides.
+
+Suggesting it is allowed, and is the right move when a task is unusually large or
+long-running — a change spanning much of a tree, a review of an entire codebase, a run
+expected to work unattended for a long stretch. Say what it would buy and let the user
+decide; then proceed with `opus` if they do not answer or do not want it.
+
+Never treat "this task is big enough" as consent. `opus` is always a legitimate choice
+for the same work, so a task being hard is never on its own a reason to reach for
+`fable`.
 
 ## Reviewing code
 
@@ -85,7 +95,7 @@ own reading of the diff. A review prompt should ask for:
 - Breaking changes, called out explicitly
 
 Reviewing a diff is `sonnet` work. Reviewing a whole codebase, or a change whose
-consequences are not confined to the lines it touches, is `fable` work.
+consequences are not confined to the lines it touches, is `opus` work.
 
 Then report the findings. Do not re-read the diff yourself to check the review; if the
 review is not trustworthy, re-run it a tier up.
