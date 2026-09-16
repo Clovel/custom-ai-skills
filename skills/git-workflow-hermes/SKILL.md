@@ -1,6 +1,6 @@
 ---
 name: git-workflow-hermes
-description: Hermes variant of git-workflow — branching, commits, and MR/PRs with commit signing OFF. Use when creating branches, committing, rebasing, cherry-picking, or preparing MRs/PRs from a Hermes session, and whenever git mentions GPG, pinentry or a passphrase. Supersedes the generic git-workflow skill on commit signing and on interactive git commands.
+description: Hermes variant of git-workflow — branching, commits, and MR/PRs with commit signing OFF. Use when creating branches, committing, rebasing, cherry-picking, or preparing MRs/PRs from a Hermes session, and whenever git mentions GPG, pinentry or a passphrase in a Hermes session. Supersedes the generic git-workflow skill on commit signing and on interactive git commands.
 ---
 
 # git-workflow-hermes

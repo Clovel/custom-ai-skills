@@ -6,6 +6,9 @@ allowed-tools: Bash, Read, Grep, Glob
 
 # GitLab CLI (glab) Skill
 
+> Vendored verbatim from [henricook/claude-glab-skill](https://github.com/henricook/claude-glab-skill), MIT licensed.
+> Copyright (c) 2025 Claude Code Skills Contributors — full text in [LICENSE](LICENSE).
+
 Provides guidance for using `glab`, the official GitLab CLI, to perform GitLab operations from the terminal.
 
 ## When to Use This Skill
