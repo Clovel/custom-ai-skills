@@ -6,10 +6,11 @@ should point here.
 
 ## Purpose
 
-This repo hosts a public collection of custom Agent Skills, distributed via
-the [`skills` CLI](https://skills.sh). Skills in this repo are intended to
-be consumable by Claude Code and any other agent runtime that implements
-the Agent Skills spec.
+This repo hosts a public collection of custom Agent Skills, distributed from
+GitHub itself — clone and link the skill directories. Nothing here is
+published to a skill registry. Skills in this repo are intended to be
+consumable by Claude Code and any other agent runtime that implements the
+Agent Skills spec.
 
 ## Directory layout
 
@@ -28,8 +29,8 @@ the Agent Skills spec.
 ```
 
 Every skill lives in its own directory under `skills/`. The entry file
-**must** be named `SKILL.md` (uppercase) — the `skills` CLI discovers
-skills by scanning for that exact filename.
+**must** be named `SKILL.md` (uppercase) — harnesses discover skills by
+scanning for that exact filename.
 
 Standalone Claude Code hooks live under `hooks/` as executable shell
 scripts. They are not auto-installed; the `README` documents wiring
@@ -58,9 +59,9 @@ so they're safe to publish.
 
 ## Conventions
 
-- **Directory name matches frontmatter `name:`.** The `skills` CLI and
-  most agents use the directory name as the canonical identifier; a
-  mismatch with the `name:` field causes confusing activation bugs.
+- **Directory name matches frontmatter `name:`.** Most agents use the
+  directory name as the canonical identifier; a mismatch with the `name:`
+  field causes confusing activation bugs.
 - **Descriptions must be pushy about triggers.** Claude tends to
   under-trigger skills, so enumerate the phrasings a user might actually
   type ("refine QA notes", "turn these QA notes into a doc", "create a QA

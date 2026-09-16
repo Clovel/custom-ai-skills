@@ -3,8 +3,63 @@
 A collection of custom SKILL.md skills for Claude Code and any agent that
 supports the [Agent Skills](https://github.com/anthropics/skills) spec.
 
-Each skill lives under `skills/<name>/SKILL.md` and is installable
-individually or as a set via the [`skills` CLI](https://skills.sh).
+Each skill lives under `skills/<name>/SKILL.md`. Distribution is **GitHub
+only** — this repo is not published to any skill registry (`skills.sh`,
+ClawHub), and no install command should point at one. Clone it, then link or
+copy the skills you want into your harness.
+
+```bash
+git clone https://github.com/Clovel/custom-ai-skills.git ~/src/custom-ai-skills
+```
+
+## Installing
+
+Two ways, both driven by the clone. No registry, no install CLI.
+
+### Harnesses with a skills directory (Claude Code, and anything that reads `SKILL.md`)
+
+Link each skill you want (recommended — one link, then `git pull` is the
+update):
+
+```bash
+ln -s ~/src/custom-ai-skills/skills/git-workflow ~/.claude/skills/git-workflow
+```
+
+Or copy it for a detached snapshot you control:
+
+```bash
+cp -R ~/src/custom-ai-skills/skills/git-workflow ~/.claude/skills/
+```
+
+Point the path at whatever directory your harness scans (`~/.claude/skills`,
+`~/.agents/skills`, a project's `.claude/skills`, ...). Keywords: symlink the
+skill directory itself, one link per skill.
+
+### Hermes
+
+Register the clone's `skills/` directory as an external skills directory in
+`~/.hermes/config.yaml`:
+
+```yaml
+skills:
+  external_dirs:
+    - ~/src/custom-ai-skills/skills
+```
+
+- Paths are `~`/`${VAR}` expanded and resolved; entries that don't exist are
+  skipped silently.
+- External dirs are **read-only**: autonomous skill maintenance (the curator)
+  never edits skills outside the profile's own `skills/` dir, and no copies are
+  made — `git pull` in the clone is the entire update.
+- Every skill in the directory becomes available. To expose only a subset,
+  point `external_dirs` at a directory of symlinks to the individual skills.
+- Takes effect in a new session. A local skill of the same name in
+  `~/.hermes/skills/` wins over the external one, so don't install these twice.
+
+### Picking individual skills
+
+Both methods are per-skill: link/copy only what you need, or keep the full set
+live. Nothing here assumes the whole collection is installed.
 
 ## Skills
 
@@ -15,10 +70,6 @@ creating, editing, or reviewing playbooks, inventories, roles, or task
 files — covers idempotence, handler patterns, variable precedence, and
 common task hygiene.
 
-```bash
-npx skills add Clovel/custom-ai-skills --skill ansible-ops
-```
-
 ### [`git-workflow`](./skills/git-workflow)
 
 Git branching, commits, and MR/PR workflow. Activates when creating
@@ -26,11 +77,9 @@ branches, committing, or preparing merge/pull requests. Covers
 deployment-model-aware branching (staging on default, prod on tag),
 bracketed issue-referenced commit format (per-tracker: GitHub/GitLab
 `#`, Linear, Jira), atomic/revertible commit rules, and
-rebase-over-merge preferences.
-
-```bash
-npx skills add Clovel/custom-ai-skills --skill git-workflow
-```
+rebase-over-merge preferences. Includes the GPG signing strategy and the
+`gpg-rewarm` helper under `references/` for harnesses that can drive an
+interactive pinentry.
 
 ### [`git-workflow-hermes`](./skills/git-workflow-hermes)
 
@@ -42,10 +91,6 @@ terminal cannot display), and every editor/picker-driven git command
 by its non-interactive equivalent. Supersedes `git-workflow` where they
 conflict; use the generic skill on harnesses that can prompt.
 
-```bash
-npx skills add Clovel/custom-ai-skills --skill git-workflow-hermes
-```
-
 ### [`glab`](./skills/glab)
 
 Expert guidance for the GitLab CLI (`glab`) — issues, merge requests,
@@ -53,10 +98,6 @@ CI/CD pipelines, repository operations. Activates when the user needs
 to interact with GitLab resources from the command line. Ships with
 detailed command references and a troubleshooting guide under
 `references/`.
-
-```bash
-npx skills add Clovel/custom-ai-skills --skill glab
-```
 
 ### [`hermes-claude-code-tmux`](./skills/hermes-claude-code-tmux)
 
@@ -68,20 +109,12 @@ patterns, explicit tool pre-granting, and `--resume` session handling.
 Supersedes the bundled `autonomous-ai-agents/claude-code` skill where
 they conflict.
 
-```bash
-npx skills add Clovel/custom-ai-skills --skill hermes-claude-code-tmux
-```
-
 ### [`k8s-ops`](./skills/k8s-ops)
 
 Kubernetes troubleshooting, deployment, and day-to-day operations.
 Activates when debugging pods, inspecting cluster health, or authoring
 manifests — covers `kubectl` diagnostics, common failure modes, and
 manifest conventions.
-
-```bash
-npx skills add Clovel/custom-ai-skills --skill k8s-ops
-```
 
 ### [`refine-qa-notes`](./skills/refine-qa-notes)
 
@@ -90,10 +123,6 @@ Takes a quickly-written, potentially multilingual markdown or plain-text
 notes file and produces an English markdown document with an issue summary
 table (status, priority, size) and per-issue analysis sections, designed to
 be updated by humans or AI agents as fixes land.
-
-```bash
-npx skills add Clovel/custom-ai-skills --skill refine-qa-notes
-```
 
 ## Hooks
 
@@ -112,7 +141,8 @@ If the cache is cold, denies the call with a clear "ask the user to
 pre-unlock" message instead of letting Claude Code hang on a pinentry
 prompt it cannot display.
 
-Install:
+Install (a copy is correct here — hooks are wired into the harness's own
+settings, not discovered from a directory):
 
 ```bash
 mkdir -p "$HOME/.claude/hooks"
@@ -145,32 +175,33 @@ Wire it in `~/.claude/settings.json` (merge with any existing `hooks`):
 
 Pairs with the [`git-workflow`](./skills/git-workflow) skill, which
 documents the surrounding GPG signing strategy (24h passphrase cache +
-once-daily pre-unlock).
+once-daily pre-unlock) for harnesses where signing applies.
 
-## Install everything
+## Updating
 
 ```bash
-npx skills add Clovel/custom-ai-skills
+git -C ~/src/custom-ai-skills pull
 ```
+
+Symlinks and Hermes `external_dirs` pick the change up immediately (new session
+for Hermes); copied skill directories must be re-copied, which is why linking is
+preferred.
 
 ## Usage
 
 Skills activate automatically based on their `description` frontmatter
 field. In Claude Code, typing `/` lists available skills and lets you
-invoke one explicitly.
-
-## Updating
-
-```bash
-npx skills list      # show installed skills
-npx skills update    # update all installed skills
-```
+invoke one explicitly. In Hermes, `hermes skills list` shows installed and
+external skills; external ones are read-only.
 
 ## Contributing
 
 Issues and pull requests are welcome. New skills should follow the existing
 `skills/<name>/SKILL.md` layout and include valid YAML frontmatter. See
 [AGENTS.md](./AGENTS.md) for conventions.
+
+Skills are distributed from this repository only — do not add registry
+install commands to this README.
 
 ## License
 

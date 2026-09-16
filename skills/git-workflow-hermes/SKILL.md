@@ -128,9 +128,9 @@ rebase onto the target branch just before requesting review.
 ## Related
 
 - `git-workflow` — the harness-agnostic version, including the GPG signing
-  strategy and the `gpg-rewarm` helper for harnesses that can prompt. Install it
-  where it is needed with
-  `npx skills add Clovel/custom-ai-skills --skill git-workflow`.
+  strategy and the `gpg-rewarm` helper for harnesses that can prompt. Link the
+  `skills/git-workflow` directory from this repo into that harness's skills dir
+  where it is needed.
 - `hooks/git-gpg-precheck.sh` — Claude Code `PreToolUse` hook that denies signed
   git operations when the passphrase cache is cold. Not applicable to Hermes,
   where signing is off outright.
