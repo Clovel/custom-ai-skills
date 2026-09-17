@@ -115,7 +115,8 @@ cannot prompt, so a tool you forget to grant is a silent stall — not an error.
 
 1. **Dump every artifact into one workdir** (`raw/` files: configs, `sshd -T`-style
 effective output, unit cats, log extracts) so CC needs no shell. Never copy private
-keys, `/etc/shadow`, or `~/.hermes/**`; public keys and fingerprints are fine.
+keys, the system password database, or the agent's own home directory into the
+workdir; public keys and fingerprints are fine.
 2. **Write a `SOURCES.md`** naming each artifact and the exact command that produced
 it, plus a "known gaps" list. CC cites `file:line` against artifacts, and a negative
 claim ("fail2ban is absent") needs its own citation to be checkable.
