@@ -103,11 +103,15 @@ detailed command references and a troubleshooting guide under
 
 Required procedure for a Hermes agent invoking the Claude Code CLI.
 Activates before any `claude` call, coding-task delegation, or subagent
-dispatch. Every invocation runs inside a named detached tmux session
-rather than a blocking terminal call, with dispatch/poll/collect
-patterns, explicit tool pre-granting, and `--resume` session handling.
-Supersedes the bundled `autonomous-ai-agents/claude-code` skill where
-they conflict.
+dispatch. The default substrate is a **live interactive Claude Code
+session inside tmux**, driven by `scripts/cc-drive.py` (start, send,
+wait, answer, stop), so the agent can answer permission dialogs and
+clarifying questions and keep several turns in one process. Print mode
+(`claude -p`) is kept for a run that needs machine-readable output
+(`--output-format json`, `--json-schema`) or piped input and cannot
+prompt. Also covers session resumption, tool pre-granting, and verifying
+a delegated run's claims. Supersedes the bundled
+`autonomous-ai-agents/claude-code` skill where they conflict.
 
 ### [`hermes-code-delegation`](./skills/hermes-code-delegation)
 
@@ -116,7 +120,9 @@ own file tools, and picks the model tier the task warrants. Activates on
 codebase-shaped requests — reviewing a branch or MR, debugging a failing
 test, explaining how something works, adding or refactoring code — and
 deliberately triggers *before* any file inside a repository is opened,
-since that is when the decision is made. Pairs with
+since that is when the decision is made. Delegation goes to the
+interactive session by default; print mode is the exception, for a run
+that needs structured output and cannot prompt. Pairs with
 `hermes-claude-code-tmux`, which owns the dispatch mechanics.
 
 ### [`k8s-ops`](./skills/k8s-ops)

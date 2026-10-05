@@ -25,12 +25,19 @@ Agent Skills spec.
 └── skills/
     └── <skill-name>/
         ├── SKILL.md
-        └── references/         # optional: bulky reference material
+        ├── references/         # optional: bulky reference material
+        └── scripts/            # optional: helper scripts the SKILL.md calls
 ```
 
 Every skill lives in its own directory under `skills/`. The entry file
 **must** be named `SKILL.md` (uppercase) — harnesses discover skills by
 scanning for that exact filename.
+
+A skill may ship helper scripts under `scripts/`. They are part of the
+skill — the `SKILL.md` names them by relative path — and carry the same
+publication rules as everything else: self-contained and generic, no
+hard-coded home paths, hostnames, or credentials. Linking or copying the
+skill directory brings the scripts with it.
 
 Standalone Claude Code hooks live under `hooks/` as executable shell
 scripts. They are not auto-installed; the `README` documents wiring
